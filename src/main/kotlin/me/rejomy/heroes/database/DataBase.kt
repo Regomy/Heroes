@@ -1,7 +1,6 @@
 package me.rejomy.heroes.database
 
 import me.rejomy.heroes.users
-import org.bukkit.Bukkit
 import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.ResultSet
@@ -29,11 +28,12 @@ class DataBase {
     private fun connection(): Connection { return DriverManager.getConnection(url) }
 
     fun getGroup(name: String): Int {
-        val result: ResultSet = connection.createStatement().executeQuery("SELECT COUNT(*) FROM users WHERE nick = '$name'")
+        val result: ResultSet = connection.createStatement().executeQuery("SELECT COUNT(*) FROM users WHERE name = '$name'")
         return result.getInt(1)
     }
+
     fun getLevel(name: String): Int {
-        val result: ResultSet = connection.createStatement().executeQuery("SELECT COUNT(*) FROM users WHERE nick = '$name'")
+        val result: ResultSet = connection.createStatement().executeQuery("SELECT COUNT(*) FROM users WHERE name = '$name'")
         return result.getInt(2)
     }
 

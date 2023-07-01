@@ -4,88 +4,100 @@ import me.rejomy.heroes.users
 import me.rejomy.heroes.util.InventoryBuilder
 import me.rejomy.heroes.util.getPriceBook
 import me.rejomy.heroes.util.replaceColor
-import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 
-class Upgrade(private val player: Player) : InventoryBuilder("§0▷ Некромант", 54, null) {
+class Upgrade(private val player: Player) : InventoryBuilder("§0▷ Некромант", 54) {
 
     val pname: String = player.name
 
     fun openInventory(): Inventory {
         val map: HashMap<Int, ItemStack> = HashMap()
-        val glassGray = createItemStack("§6", null, Material.STAINED_GLASS_PANE, 1, 7)
-        val glassBlue = createItemStack("§6", null, Material.STAINED_GLASS_PANE, 1, 11)
+        customization(map)
 
-        for (i in 0..53) {
-            when (i) {
-                in 10..16 -> continue
-                in 19..25 -> {
-                    if (i == 22) {
-                        var name = ""
-                        var lore = ArrayList<String>()
-                        lore.add("")
-                        when (users[pname]!![0]) {
-                            "жизнь" -> {
-                                name = "2Жизни"
-                                lore.add("&c ‣ &7Увеличения здоровья")
-                                lore.add("&c ‣ &7Увеличения скорости регенерации  ")
-                            }
+        if(users[pname]!![1].toInt() == 20) {
 
-                            "порядок" -> {
-                                name = "9Порядка"
-                                lore.add("&c ‣ &7Увеличения скорость бега  ")
-                            }
-
-                            "сила" -> {
-                                name = "4Силы"
-                                lore.add("&c ‣ &7Повышения урона  ")
-                            }
-                        }
-                        lore.add(1, "&c ‣ &7Нажмите на книгу &$name&7 для    ")
-                        lore.add("")
-                        lore.add("&c ‣ &7Ваш уровень: ${users[pname]!![1]}")
-                        lore.add("&c ‣ &7Цена улучшения: ${getPriceBook(player)}")
-                        lore.add("")
-                        map[i] = createItemStack("§6Книга §$name", replaceColor(lore), Material.BOOK, 1)
-                    }
-                    continue
+        } else {
+            var name = ""
+            val lore = ArrayList<String>()
+            lore.add("")
+            val level = users[pname]!![1].toInt()
+            when (users[pname]!![0]) {
+                "жизнь" -> {
+                    name = "2Жизни"
+                    lore.add("&c ‣ &7Увеличения здоровья на 1 хп за уровень   ")
+                    lore.add("&c ‣ &7Шанс $level% получить сопротивление   ")
+                    lore.add("&c ‣ &7Увеличения скорости регенерации  ")
                 }
 
-                in 28..34 -> {
-                    if (i == 33) {
-                        var lore = ArrayList<String>()
-                        lore.add("")
-                        lore.add("§5§lОткрыть магазин вещей   ")
-                        lore.add("§a§m--")
-                        lore.add("")
-                        lore.add("§a Нажмите§7 - §fчтобы открыть магазин     ")
-                        lore.add("§f предметов для вашей способности!")
-                        lore.add("")
-                        map[i] = createItemStack("§7", replaceColor(lore), Material.FLOWER_POT_ITEM, 1)
-                    }
-                    continue
+                "порядок" -> {
+                    name = "9Порядка"
+                    lore.add("&c ‣ &7Увеличения скорость бега на 1.0 ")
                 }
 
-                in 37..43 -> continue
-                49 -> {
-                    var lore = ArrayList<String>()
-                    lore.add("")
-                    lore.add("§5§lСбросить текущий класс")
-                    lore.add("§a§m--")
-                    lore.add("")
-                    lore.add("§a Нажмите§7 - §fчтобы заново выбрать     ")
-                    lore.add("§f класс, но вы потеряете уровень прокачки!")
-                    lore.add("")
-                    map[i] = createItemStack("§7", replaceColor(lore), Material.BARRIER, 1)
-                    continue
+                "сила" -> {
+                    name = "4Силы"
+                    lore.add("&c ‣ &7Повышения урона на 0.1 за уровень ")
                 }
+
+                "смерть" -> {
+                    name = "8Смерти"
+                    lore.add("&c ‣ &7Шанс ${20 + level}% сохранить ${30 + level}% инвентаря.")
+                    lore.add("&c ‣ &7Шанс ${75 + level}% на блокировку магии врага.")
+                }
+
             }
-            if (i % 2 == 0) map[i] = glassGray
-            else map[i] = glassBlue
+            lore.add(1, "&c ‣ &7Нажмите на книгу &$name&7 для    ")
+            lore.add("")
+            lore.add("&c ‣ &7Ваш уровень: ${users[pname]!![1]}")
+            lore.add("&c ‣ &7Цена улучшения: ${getPriceBook(player)}")
+            lore.add("")
+            map[22] = createItemStack("§6Книга §$name", replaceColor(lore), Material.BOOK, 1)
         }
+
+        map[33] = createItemStack(
+            "§7", lore(
+                arrayOf(
+                    "", "§5§lОткрыть магазин вещей   ", "§a§m--", "", "§a Нажмите§7 - §fчтобы открыть магазин     ",
+                    "§f предметов для вашей способности!", ""
+                )
+            ), Material.FLOWER_POT_ITEM, 1
+        )
+
+        map[29] = createItemStack(
+            "§7",
+            lore(
+                arrayOf(
+                    "",
+                    "§5§lТоп по прокачке",
+                    "§a§m--",
+                    "§a Нажмите§7 - §fчтобы открыть топ     ",
+                    "§f Обновление происходит с перезагрузкой.    ",
+                    ""
+                )
+            ),
+            Material.GOLD_INGOT,
+            1
+        )
+
+        map[49] = createItemStack(
+            "§7",
+            lore(
+                arrayOf(
+                    "",
+                    "§5§lСбросить текущий класс",
+                    "§a§m--",
+                    "§a Нажмите§7 - §fчтобы заново выбрать     ",
+                    "§f класс, но вы потеряете уровень прокачки     ",
+                    "§f и половину затраченного на прокачку баланса!     ",
+                    ""
+                )
+            ),
+            Material.BARRIER,
+            1
+        )
 
         return createInv(map)
     }

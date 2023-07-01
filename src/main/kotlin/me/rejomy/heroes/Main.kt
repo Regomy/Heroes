@@ -2,14 +2,15 @@ package me.rejomy.heroes
 
 import me.rejomy.heroes.command.Hero
 import me.rejomy.heroes.database.DataBase
-import me.rejomy.heroes.listener.Connection
-import me.rejomy.heroes.listener.Fight
-import me.rejomy.heroes.listener.Interact
-import me.rejomy.heroes.util.EconomyManager
+import me.rejomy.heroes.listener.*
+import me.rejomy.heroes.util.*
+import me.rejomy.heroes.util.inventory.ClearHeroConfirm
 import me.rejomy.heroes.util.inventory.Newplayers
+import me.rejomy.heroes.util.inventory.Top
+import me.rejomy.heroes.util.inventory.shop.Death
+import me.rejomy.heroes.util.inventory.shop.Life
 import me.rejomy.heroes.util.inventory.shop.Order
-import me.rejomy.heroes.util.newplayersInv
-import me.rejomy.heroes.util.shopOrderInv
+import me.rejomy.heroes.util.inventory.shop.Power
 import org.bukkit.Bukkit
 import org.bukkit.inventory.Inventory
 import org.bukkit.plugin.java.JavaPlugin
@@ -19,6 +20,7 @@ lateinit var db: DataBase
 
 var users = HashMap<String, Array<String>>()
 var nekro = HashMap<String, Inventory>()
+lateinit var top: Inventory
 
 class Main : JavaPlugin() {
 
@@ -28,17 +30,23 @@ class Main : JavaPlugin() {
         EconomyManager.init()
         newplayersInv = Newplayers().openInventory()
         shopOrderInv = Order().openInventory()
+        shopPowerInv = Power().openInventory()
+        shopLifeInv = Life().openInventory()
+        shopDeathInv = Death().openInventory()
+        ClearHeroConfirm = ClearHeroConfirm().openInventory()
         db = DataBase()
         db.setUsers()
-        Bukkit.getPluginManager().registerEvents(me.rejomy.heroes.listener.Inventory(), this)
+        Bukkit.getPluginManager().registerEvents(Inventory(), this)
         Bukkit.getPluginManager().registerEvents(Connection(), this)
+        Bukkit.getPluginManager().registerEvents(me.rejomy.heroes.listener.Death(), this)
         Bukkit.getPluginManager().registerEvents(Interact(), this)
         Bukkit.getPluginManager().registerEvents(Fight(), this)
+        Bukkit.getPluginManager().registerEvents(ItemConsumeListener(), this)
+        Bukkit.getPluginManager().registerEvents(Enchant(), this)
+        Bukkit.getPluginManager().registerEvents(TeleportListener(), this)
+        Bukkit.getPluginManager().registerEvents(ItemRegisterListener() , this)
         getCommand("heroes").executor = Hero()
-    }
-
-    override fun onDisable() {
-        super.onDisable()
+        top = Top().openInventory()
     }
 
 }

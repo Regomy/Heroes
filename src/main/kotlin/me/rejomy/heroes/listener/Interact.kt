@@ -12,6 +12,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
+import kotlin.math.floor
 
 
 class Interact : Listener {
@@ -22,26 +23,24 @@ class Interact : Listener {
         val name = player.name
         if (event.action == Action.RIGHT_CLICK_AIR || event.action == Action.RIGHT_CLICK_BLOCK) {
             val item = player.itemInHand
-            if(item != null && item.itemMeta != null && item.itemMeta.lore != null && item.type == Material.BOW
+            if(users.containsKey(name) && item != null && item.itemMeta != null && item.itemMeta.lore != null && item.type == Material.BOW
                 && checkLore(item.itemMeta.lore, "Скорострельность")
-                && checkLore(item.itemMeta.lore, name)
                 && users[name]!![0] == "порядок" && containsItem(player, Material.ARROW)
             ) {
-                if(item.durability >= item.type.maxDurability) {
-                    player.itemInHand = ItemStack(Material.AIR)
+
+                val level = (users[name]!![1]).toInt()
+
+                if((item.durability + (4 - floor( (level/10).toDouble() ).toInt())).toShort() >= 384) {
+                    player.inventory.setItem(player.inventory.heldItemSlot, null)
+                    event.isCancelled = true
                     return
                 }
+
                 removeOne(player.inventory, ItemStack(Material.ARROW))
                 val arrow = player.launchProjectile(Arrow::class.java)
-                val level = (users[name]!![1]).toInt()
-                if(level > 1) {
-                    val vec = arrow.velocity
-                    vec.multiply(1 + (level / 10))
-                    arrow.velocity = vec
-                    arrow.knockbackStrength = arrow.knockbackStrength + (level / 10)
-                }
-
-                item.durability = (item.durability + 3).toShort()
+                arrow.velocity.multiply(2.0 + level/20)
+                arrow.knockbackStrength = arrow.knockbackStrength + (level / 4)
+                item.durability = (item.durability + (4 - floor( (level/10).toDouble() ).toInt())).toShort()
                 player.itemInHand = item
                 event.isCancelled = true
             }

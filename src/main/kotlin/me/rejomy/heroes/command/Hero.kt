@@ -1,10 +1,10 @@
 package me.rejomy.heroes.command
 
 import me.rejomy.heroes.INSTANCE
+import me.rejomy.heroes.db
 import me.rejomy.heroes.nekro
 import me.rejomy.heroes.users
 import me.rejomy.heroes.util.newplayersInv
-import org.bukkit.Bukkit
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -19,31 +19,26 @@ class Hero : CommandExecutor {
         args: Array<out String>?
     ): Boolean {
 
-        if(args!!.isEmpty()) {
-            // open inventory
-            var player = sender as Player
+        if(args!!.isEmpty() && sender is Player) {
             if(users.containsKey(sender.name))
-                player.openInventory(nekro[player.name])
+                sender.openInventory(nekro[sender.name])
             else
-                player.openInventory(newplayersInv)
-
-
+                sender.openInventory(newplayersInv)
         } else if (checkPermission(sender!!, "admin")) {
+            if(args.isEmpty()) return true
             when (args[0]) {
-                "reload", "релоад" -> {
-                    INSTANCE.saveDefaultConfig()
-                }
-                "info" -> {
-                    if(args[1].isNotEmpty()) {
-                        sender.sendMessage("Укажите ник игрока")
-                        return true
-                    } else {
-                        val target = Bukkit.getPlayer(args[1])
-                        if(target != null)
-                            sender.sendMessage("${target.name} level ${users[target.name]!![1]}")
-                        else
-                            sender.sendMessage("Игрок не найден!")
+                "help" -> sender.sendMessage("/reload | /info name | /remove name | /set name size")
+                "reload", "релоад" -> INSTANCE.reloadConfig()
+                "info" -> if(hasPlayer(args[1])) sender.sendMessage("${args[1]} level ${users[args[1]]!![1]}")
+                "remove" -> if(hasPlayer(args[1])) {
+                        db.delete(args[1])
+                        users.remove(args[1])
+                        nekro.remove(args[1])
                     }
+                "set" -> if(hasPlayer(args[1])) {
+                    if(args.size < 3) return true
+                    db.set(args[1],  users[args[1]]!![0], args[2].toInt())
+                    users[args[1]] = arrayOf(users[args[1]]!![0], args[2])
                 }
             }
         }
@@ -52,5 +47,7 @@ class Hero : CommandExecutor {
     }
 
     fun checkPermission(sender: CommandSender, permission: String): Boolean { return sender.hasPermission(permission) }
+
+    fun hasPlayer(player: String): Boolean { return player.isNotEmpty() && users.containsKey(player) }
 
 }

@@ -6,6 +6,13 @@ import org.bukkit.inventory.ItemStack
 
 open class ItemEditor {
 
+    fun lore(array: Array<String>): ArrayList<String> {
+        val list = ArrayList<String>()
+        for(i in array)
+            list.add(replaceColor(i))
+        return list
+    }
+
     fun createItemStack(name: String, lore: ArrayList<String>?, material: Material, amount: Int): ItemStack {
         val item = ItemStack(material, amount)
         val meta = item.itemMeta
@@ -19,7 +26,27 @@ open class ItemEditor {
             meta.lore = lore
         }
 
-        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_DESTROYS, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_PLACED_ON)
+        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_DESTROYS, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_PLACED_ON, ItemFlag.HIDE_ENCHANTS)
+
+        item.itemMeta = meta
+        return item
+    }
+
+    fun createItemStack(name: String, lore: ArrayList<String>?, itemStack: ItemStack, amount: Int): ItemStack {
+        val item = itemStack
+        item.amount = amount
+        val meta = item.itemMeta
+
+        meta.displayName = replaceColor(name)
+
+        if (lore != null) {
+            lore.forEach {
+                replaceColor(it)
+            }
+            meta.lore = lore
+        }
+
+        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_DESTROYS, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_PLACED_ON, ItemFlag.HIDE_ENCHANTS)
 
         item.itemMeta = meta
         return item

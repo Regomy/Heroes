@@ -10,13 +10,15 @@ import kotlin.math.pow
 
 
 lateinit var newplayersInv: Inventory
+lateinit var ClearHeroConfirm: Inventory
 lateinit var shopOrderInv: Inventory
+lateinit var shopDeathInv: Inventory
 lateinit var shopLifeInv: Inventory
 lateinit var shopPowerInv: Inventory
 
 fun emptySlot(player: Player): Boolean {
     for (i in 0..player.inventory.size)
-        if (player.inventory.getItem(i) != null)
+        if (player.inventory.getItem(i) == null || player.inventory.getItem(i).type == Material.AIR)
             return true
     return false
 }
@@ -55,6 +57,10 @@ fun checkLore(lore: List<String>, word: String): Boolean {
     return false
 }
 
+fun getLevel(name: String): Int {
+    return if(users.containsKey(name)) users[name]!![1].toInt() else 0
+}
+
 fun replaceColor(array: ArrayList<String>): ArrayList<String> {
     val customList = ArrayList<String>()
     for (i in array)
@@ -64,5 +70,5 @@ fun replaceColor(array: ArrayList<String>): ArrayList<String> {
 
 fun getPriceBook(player: Player): Int {
     val level = users[player.name]!![1].toInt()
-    return if(level < 11) 4000 * 2.0.pow(level).toInt() else 4000 * 1.5.pow(level).toInt()
+    return if(level < 8) 2000 * 1.5.pow(level).toInt() else (2000 * 1.5.pow(7).toInt()) + (2000 * 1.26.pow(level).toInt())
 }

@@ -9,12 +9,11 @@ import org.bukkit.inventory.ItemStack
 open class InventoryBuilder(
     private val name: String,
     private val slots: Int,
-    private val owner: InventoryHolder?
 ): ItemEditor() {
 
     fun customization(map: HashMap<Int, ItemStack>): HashMap<Int, ItemStack> {
-        val glassGray = createItemStack("", null, Material.STAINED_GLASS_PANE, 1, 7)
-        val glassBlue = createItemStack("", null, Material.STAINED_GLASS_PANE, 1, 11)
+        val glassGray = createItemStack("§7", null, Material.STAINED_GLASS_PANE, 1, 7)
+        val glassBlue = createItemStack("§7", null, Material.STAINED_GLASS_PANE, 1, 11)
         for (i in 0..53) {
             when (i) {
                 in 10..16 -> continue
@@ -29,7 +28,7 @@ open class InventoryBuilder(
     }
 
     fun createInv(items: HashMap<Int, ItemStack>): Inventory {
-        val inv = Bukkit.createInventory(owner, slots, name.replace("&", "§"))
+        val inv = Bukkit.createInventory(null, slots, name.replace("&", "§"))
 
         for((slot, item) in items) {
             inv.setItem(slot, item)
