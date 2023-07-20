@@ -11,7 +11,9 @@ class Enchant: Listener {
     @EventHandler
     fun onEnchant(event: EnchantItemEvent) {
         val item = event.item
-        if(!item.hasItemMeta() || !item.itemMeta.hasLore() || !checkLore(item.itemMeta.lore, "уровня вашего героя")) return
+        if(!item.hasItemMeta() || !item.itemMeta.hasLore() ||
+            !checkLore(item.itemMeta.lore, "Жизн") && !checkLore(item.itemMeta.lore, "Поряд")
+            && !checkLore(item.itemMeta.lore, "Смерт") && !checkLore(item.itemMeta.lore, "Сил")) return
         val itemMeta = item.itemMeta
 
         if(item.type == Material.BOW) {

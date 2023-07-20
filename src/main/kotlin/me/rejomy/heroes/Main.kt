@@ -1,8 +1,10 @@
 package me.rejomy.heroes
 
+import me.realized.duels.api.Duels
 import me.rejomy.heroes.command.Hero
 import me.rejomy.heroes.database.DataBase
 import me.rejomy.heroes.listener.*
+import me.rejomy.heroes.listener.duel.MatchListener
 import me.rejomy.heroes.util.*
 import me.rejomy.heroes.util.inventory.ClearHeroConfirm
 import me.rejomy.heroes.util.inventory.Newplayers
@@ -21,12 +23,16 @@ lateinit var db: DataBase
 var users = HashMap<String, Array<String>>()
 var nekro = HashMap<String, Inventory>()
 lateinit var top: Inventory
+var duels: Duels? = null
 
 class Main : JavaPlugin() {
 
     override fun onEnable() {
         saveDefaultConfig()
         INSTANCE = this
+        duels = Bukkit.getServer().pluginManager.getPlugin("Duels") as Duels
+        if(duels != null)
+            Bukkit.getPluginManager().registerEvents(MatchListener(), this)
         EconomyManager.init()
         newplayersInv = Newplayers().openInventory()
         shopOrderInv = Order().openInventory()

@@ -1,18 +1,16 @@
 package me.rejomy.heroes.listener
 
-import me.rejomy.heroes.INSTANCE
+import me.rejomy.heroes.duels
+import me.rejomy.heroes.listener.order.checkOrderSpeedFight
 import me.rejomy.heroes.users
 import me.rejomy.heroes.util.checkLore
 import me.rejomy.heroes.util.getLevel
-import org.bukkit.Bukkit
-import org.bukkit.Effect
 import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Arrow
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
-import org.bukkit.entity.Projectile
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
@@ -20,12 +18,13 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
-import org.bukkit.util.Vector
 import java.util.*
+import kotlin.collections.HashMap
 import kotlin.math.floor
 
-
 class Fight : Listener {
+
+    var lastEks = HashMap<Player, Long>()
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onFight(event: EntityDamageByEntityEvent) {
@@ -37,6 +36,8 @@ class Fight : Listener {
         }
         if (event.damager is Arrow && (event.damager as Arrow).shooter is Player) {
             val player = (event.damager as Arrow).shooter as Player
+
+            if (duels != null && duels!!.arenaManager.isInMatch(player)) return
 
             if (cancelDmg.contains(player)) {
                 event.isCancelled = true
@@ -69,6 +70,7 @@ class Fight : Listener {
         val kname = killer.name
         val player = event.entity as Player
         val pname = player.name
+        if (duels != null && (duels!!.arenaManager.isInMatch(player) || duels!!.arenaManager.isInMatch(killer))) return
 
         if (cancelDmg.contains(killer)) {
             event.isCancelled = true
@@ -77,6 +79,7 @@ class Fight : Listener {
 
         if (users.containsKey(player.name)) {
             if (users[player.name]!![0] == "порядок") {
+                checkOrderSpeedFight(player)
                 var strength = 0
                 for (armor in player.inventory.armorContents) {
                     if (armor != null && armor.hasItemMeta() && armor.itemMeta.hasLore() && checkLore(
@@ -144,7 +147,7 @@ class Fight : Listener {
                     }
                 }
                 event.damage = event.damage * 1.6
-                if (Random().nextInt(100) <= 75 + level)
+                if (Random().nextInt(100) <= 80 + level)
                     return
             } else if (users[pname]!![0] == "жизнь") {
                 if (Random().nextInt(100) < getLevel(pname))
@@ -255,36 +258,42 @@ class Fight : Listener {
             }
 
             if (ekskalibur > 0) {
-                if (player.inventory.armorContents.isNotEmpty() && Random().nextInt(150).toDouble() <= ekskalibur) {
+                if (!lastEks.containsKey(player) || lastEks.containsKey(killer) && System.currentTimeMillis() - lastEks[killer]!! > 10000)
+                    if ((lastEks.containsKey(killer) && System.currentTimeMillis() - lastEks[killer]!! > 10000 || !lastEks.containsKey(
+                            killer
+                        ))
+                        && player.inventory.armorContents.isNotEmpty() && Random().nextInt(150).toDouble() <= ekskalibur
+                    ) {
 
-                    val arm = player.inventory.armorContents
-                    val chance2 = Random().nextInt(arm.size)
-                    if (arm[chance2] == null || arm[chance2].type == Material.AIR) return
+                        val arm = player.inventory.armorContents
+                        val chance2 = Random().nextInt(arm.size)
+                        if (arm[chance2] == null || arm[chance2].type == Material.AIR) return
 
-                    val ekspa = killer.itemInHand
-                    val itemDur = (arm[chance2].type.maxDurability - arm[chance2].durability)
+                        val ekspa = killer.itemInHand
+                        val itemDur = (arm[chance2].type.maxDurability - arm[chance2].durability)
 
-                    if (ekspa.durability + itemDur >= Material.DIAMOND_SWORD.maxDurability) {
+                        if (ekspa.durability + itemDur >= Material.DIAMOND_SWORD.maxDurability) {
 
-                        killer.playSound(player.location, Sound.ANVIL_BREAK, 2f, 2f)
-                        killer.inventory.setItem(killer.inventory.heldItemSlot, null)
-                        event.isCancelled = true
-                        if (arm[chance2].durability + (Material.DIAMOND_SWORD.maxDurability - ekspa.durability) < arm[chance2].type.maxDurability)
-                            arm[chance2].durability =
-                                (arm[chance2].durability + (Material.DIAMOND_SWORD.maxDurability - ekspa.durability)).toShort()
-                        else arm[chance2] = null
-                    } else {
-                        ekspa.durability = (ekspa.durability + itemDur).toShort()
-                        player.playSound(player.location, Sound.ANVIL_BREAK, 2f, 2f)
-                        killer.itemInHand = ekspa
-                        var itemStack = ItemStack(Material.AIR)
-                        arm[chance2] = itemStack
+                            killer.playSound(player.location, Sound.ANVIL_BREAK, 2f, 2f)
+                            killer.inventory.setItem(killer.inventory.heldItemSlot, null)
+                            event.isCancelled = true
+                            if (arm[chance2].durability + (Material.DIAMOND_SWORD.maxDurability - ekspa.durability) < arm[chance2].type.maxDurability)
+                                arm[chance2].durability =
+                                    (arm[chance2].durability + (Material.DIAMOND_SWORD.maxDurability - ekspa.durability)).toShort()
+                            else arm[chance2] = null
+                        } else {
+                            ekspa.durability = (ekspa.durability + itemDur).toShort()
+                            player.playSound(player.location, Sound.ANVIL_BREAK, 2f, 2f)
+                            killer.itemInHand = ekspa
+                            var itemStack = ItemStack(Material.AIR)
+                            arm[chance2] = itemStack
+                        }
+                        player.inventory.armorContents = arm
+                        lastEks[killer] = System.currentTimeMillis()
                     }
-                    player.inventory.armorContents = arm
-                }
             } else if (order_sword > 0) {
                 if (order_sword >= Random().nextInt(250))
-                    player.addPotionEffect(PotionEffect(PotionEffectType.SLOW, (2 + getLevel(kname) / 5) * 20, 10))
+                    player.addPotionEffect(PotionEffect(PotionEffectType.SLOW, (2 + getLevel(kname) / 5) * 20, 1 + getLevel(kname) / 4))
             } else if (balda_sword_strength > 0) {
                 if (Random().nextInt(100) < getLevel(killer.name)) {
                     var multi = 2
@@ -309,7 +318,7 @@ class Fight : Listener {
                                 val tinv = inv.clone()
                                 tinv.amount = 1
                                 killer.inventory.addItem(tinv)
-                                killer.itemInHand.durability = (killer.itemInHand.durability + 40).toShort()
+                                killer.itemInHand.durability = (killer.itemInHand.durability + 150).toShort()
 
                                 if (inv.amount == 1)
                                     player.inventory.remove(inv)
@@ -327,7 +336,7 @@ class Fight : Listener {
                         if (entity == killer || entity == player) continue
                         entity.velocity = killer.location.direction.multiply(1)
                         entity.damage(event.finalDamage)
-                        player.itemInHand.durability = (player.itemInHand.durability + 2).toShort()
+                        killer.itemInHand.durability = (player.itemInHand.durability + 6).toShort()
                     }
                 }
             } else if (dubina_sword_power > 0) {
