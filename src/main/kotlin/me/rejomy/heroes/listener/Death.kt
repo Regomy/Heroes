@@ -2,14 +2,15 @@ package me.rejomy.heroes.listener
 
 import me.rejomy.heroes.users
 import org.bukkit.event.EventHandler
-import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.player.PlayerRespawnEvent
 import org.bukkit.inventory.ItemStack
-import java.util.Random
+import java.util.*
+import kotlin.streams.toList
 
 val items = HashMap<String, ArrayList<ItemStack>>()
+private val random = Random()
 
 class Death : Listener {
 
@@ -17,51 +18,55 @@ class Death : Listener {
     fun onDeath(event: PlayerDeathEvent) {
         val player = event.entity.player
         val name = player.name
-        if (!users.containsKey(name) || users[name]!![0] != "смерть" || Random().nextInt(100) < 20 + users[name]!![1].toInt()) return
-        val drops = ArrayList<ItemStack>()
+        if (!users.containsKey(name) || users[name]!![0] != "смерть" || random.nextInt(100) < 20 + users[name]!![1].toInt()) return
+        val drops = ArrayList(event.drops.stream().filter { it != null }.toList())
 
-        for(drop in event.drops)
-            if(drop != null)
-                drops.add(drop)
 
+        // If player has only one item then keep it
         if (drops.size == 1) {
-            val item = ArrayList<ItemStack>()
-            item.add(drops[0])
-            items[name] = item
+            items[name] = Collections.nCopies(1, drops[0]) as ArrayList<ItemStack>
             event.drops.remove(drops[0])
             player.inventory.remove(drops[0])
-        } else if (drops.size == 2) {
-            val drop = Random().nextInt(2)
-            val item = ArrayList<ItemStack>()
-            item.add(drops[drop])
-            items[name] = item
-            event.drops.remove(drops[drop])
-            player.inventory.remove(drops[drop])
-        } else {
-            val chance = 30 + users[name]!![1].toInt()
-            val size = ((drops.size * chance) / 100)
-
-            val item = ArrayList<ItemStack>()
-            for (amount in 1..size) {
-                val random = Random().nextInt(drops.size)
-                item.add(drops[random])
-                event.drops.remove(drops[random])
-                player.inventory.remove(drops[random])
-                drops.removeAt(random)
-            }
-            items[name] = item
+            return
         }
+        // If player has only two items then keep one of them
+        else if (drops.size == 2) {
+            val randomIndex = random.nextInt(2)
+            items[name] = Collections.nCopies(1, drops[randomIndex]) as ArrayList<ItemStack>
+            event.drops.remove(drops[randomIndex])
+            player.inventory.remove(drops[randomIndex])
+            return
+        }
+
+
+        // If player has multiple items then keep 30 + level% of them
+        val chance = 30 + users[name]!![1].toInt()
+        val size = drops.size * chance / 100
+
+        val newItems = ArrayList<ItemStack>(drops.size)
+        for (amount in 1..size) {
+            val randomIndex = random.nextInt(drops.size)
+            newItems.add(drops[randomIndex])
+            drops.removeAt(randomIndex)
+        }
+        event.drops.removeAll(newItems)
+        player.inventory.removeAll { newItems.contains(it) }
+        items[name] = newItems
     }
 
     @EventHandler
     fun onRespawn(event: PlayerRespawnEvent) {
         val player = event.player
         val name = player.name
-        if(items.containsKey(name)) {
-            for(i in 0 until items[name]!!.size)
-                player.inventory.setItem(i, items[name]!![i])
-            items.remove(name)
+        if (!items.containsKey(name)) {
+            return
         }
+
+        // Set player items on respawn
+        for(i in 0 until items[name]!!.size) {
+            player.inventory.setItem(i, items[name]!![i])
+        }
+        items.remove(name)
     }
 
 }
