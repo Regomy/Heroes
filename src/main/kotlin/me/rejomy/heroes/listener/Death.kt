@@ -1,6 +1,7 @@
 package me.rejomy.heroes.listener
 
 import me.rejomy.heroes.users
+import org.bukkit.Material
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.PlayerDeathEvent
@@ -50,7 +51,10 @@ class Death : Listener {
             drops.removeAt(randomIndex)
         }
         event.drops.removeAll(newItems)
-        player.inventory.removeAll { newItems.contains(it) }
+        player.inventory.forEach {
+            if(newItems.contains(it))
+                it.type = Material.AIR
+        }
         items[name] = newItems
     }
 
