@@ -48,7 +48,7 @@ class Fight : Listener {
                 val group = users[player.name]!![0]
 
                 if (group == "сила")
-                    event.damage = event.damage + 0.5 + 0.1 * users[player.name]!![1].toInt()
+                    event.damage = event.damage + 0.1 + 0.1 * users[player.name]!![1].toInt()
                 else if (group == "порядок") {
 
                     val item = player.itemInHand
@@ -205,7 +205,7 @@ class Fight : Listener {
             }
 
             if (users[kname]!![0] == "сила")
-                event.damage = event.damage + 0.5 + 0.1 * level
+                event.damage = event.damage + 0.1 + 0.1 * level
         }
 
         if (event.entity is Player) {
@@ -340,7 +340,7 @@ class Fight : Listener {
                     }
                 }
             } else if (dubina_sword_power > 0) {
-                if (Random().nextInt(50) < getLevel(kname)) {
+                if (Random().nextInt(30) < getLevel(kname)) {
                     event.damage *= 2
                     player.itemInHand.durability = (player.itemInHand.durability + 2).toShort()
                 }

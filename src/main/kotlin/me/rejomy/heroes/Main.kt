@@ -30,7 +30,7 @@ class Main : JavaPlugin() {
     override fun onEnable() {
         saveDefaultConfig()
         INSTANCE = this
-        duels = Bukkit.getServer().pluginManager.getPlugin("Duels") as Duels
+        duels = Bukkit.getServer().pluginManager.getPlugin("Duels") as Duels?
         if(duels != null)
             Bukkit.getPluginManager().registerEvents(MatchListener(), this)
         EconomyManager.init()
