@@ -1,7 +1,6 @@
 package me.rejomy.heroes.listener
 
 import me.rejomy.heroes.users
-import org.bukkit.Material
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.PlayerDeathEvent
@@ -19,13 +18,15 @@ class Death : Listener {
     fun onDeath(event: PlayerDeathEvent) {
         val player = event.entity.player
         val name = player.name
-        if (!users.containsKey(name) || users[name]!![0] != "смерть" || random.nextInt(100) < 20 + users[name]!![1].toInt()) return
+        // Check if it's possible to save inventory
+        if (!users.containsKey(name) || users[name]!![0] != "смерть" || random.nextInt(100) >= 20 + users[name]!![1].toInt())
+            return
         val drops = ArrayList(event.drops.stream().filter { it != null }.toList())
 
 
         // If player has only one item then keep it
         if (drops.size == 1) {
-            items[name] = Collections.nCopies(1, drops[0]) as ArrayList<ItemStack>
+            items[name] = ArrayList(Collections.nCopies(1, drops[0]))
             event.drops.remove(drops[0])
             player.inventory.remove(drops[0])
             return
@@ -33,7 +34,7 @@ class Death : Listener {
         // If player has only two items then keep one of them
         else if (drops.size == 2) {
             val randomIndex = random.nextInt(2)
-            items[name] = Collections.nCopies(1, drops[randomIndex]) as ArrayList<ItemStack>
+            items[name] = ArrayList(Collections.nCopies(1, drops[randomIndex]))
             event.drops.remove(drops[randomIndex])
             player.inventory.remove(drops[randomIndex])
             return
@@ -41,19 +42,17 @@ class Death : Listener {
 
 
         // If player has multiple items then keep 30 + level% of them
-        val chance = 30 + users[name]!![1].toInt()
-        val size = drops.size * chance / 100
+        val percentage = 30 + users[name]!![1].toInt()
+        val size = drops.size * percentage / 100
 
         val newItems = ArrayList<ItemStack>(drops.size)
-        for (amount in 1..size) {
+        repeat(size) {
             val randomIndex = random.nextInt(drops.size)
             newItems.add(drops[randomIndex])
+
+            player.inventory.remove(drops[randomIndex])
+            event.drops.remove(drops[randomIndex])
             drops.removeAt(randomIndex)
-        }
-        event.drops.removeAll(newItems)
-        player.inventory.forEach {
-            if(newItems.contains(it))
-                it.type = Material.AIR
         }
         items[name] = newItems
     }
