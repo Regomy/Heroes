@@ -6,7 +6,6 @@ import me.rejomy.heroes.top
 import me.rejomy.heroes.users
 import me.rejomy.heroes.util.*
 import me.rejomy.heroes.util.inventory.Upgrade
-import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -15,7 +14,6 @@ import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryType
 import org.bukkit.inventory.ItemStack
-import kotlin.math.pow
 
 class Inventory : Listener {
 
@@ -163,7 +161,7 @@ class Inventory : Listener {
                     //array.add("§7")
                     im.lore = array
                     citem.itemMeta = im
-                    if (emptySlot(player))
+                    if (hasEmptySlot(player))
                         player.inventory.addItem(citem)
                     else
                         player.location.world.dropItemNaturally(player.location, citem)

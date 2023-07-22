@@ -6,14 +6,14 @@ import org.bukkit.inventory.ItemStack
 
 open class ItemEditor {
 
-    fun lore(array: Array<String>): ArrayList<String> {
+    fun lore(array: Array<String>): List<String> {
         val list = ArrayList<String>()
         for(i in array)
             list.add(replaceColor(i))
         return list
     }
 
-    fun createItemStack(name: String, lore: ArrayList<String>?, material: Material, amount: Int): ItemStack {
+    fun createItemStack(name: String, lore: List<String>?, material: Material, amount: Int): ItemStack {
         val item = ItemStack(material, amount)
         val meta = item.itemMeta
 
@@ -32,7 +32,7 @@ open class ItemEditor {
         return item
     }
 
-    fun createItemStack(name: String, lore: ArrayList<String>?, itemStack: ItemStack, amount: Int): ItemStack {
+    fun createItemStack(name: String, lore: List<String>?, itemStack: ItemStack, amount: Int): ItemStack {
         val item = itemStack
         item.amount = amount
         val meta = item.itemMeta
@@ -52,7 +52,7 @@ open class ItemEditor {
         return item
     }
 
-    fun createItemStack(name: String, lore: ArrayList<String>?, material: Material, amount: Int, data: Short): ItemStack {
+    fun createItemStack(name: String, lore: List<String>?, material: Material, amount: Int, data: Short): ItemStack {
         val item: ItemStack = createItemStack(name, lore, material, amount)
 
         if(data > 0) item.durability = data

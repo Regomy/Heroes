@@ -3,7 +3,6 @@ package me.rejomy.heroes.util
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.inventory.Inventory
-import org.bukkit.inventory.InventoryHolder
 import org.bukkit.inventory.ItemStack
 
 open class InventoryBuilder(
@@ -27,7 +26,7 @@ open class InventoryBuilder(
         return map
     }
 
-    fun createInv(items: HashMap<Int, ItemStack>): Inventory {
+    fun createInv(items: Map<Int, ItemStack>): Inventory {
         val inv = Bukkit.createInventory(null, slots, name.replace("&", "§"))
 
         for((slot, item) in items) {

@@ -9,7 +9,7 @@ import org.bukkit.inventory.ItemStack
 import java.util.*
 import kotlin.streams.toList
 
-val items = HashMap<String, ArrayList<ItemStack>>()
+val items = HashMap<String, List<ItemStack>>()
 private val random = Random()
 
 class Death : Listener {
@@ -26,7 +26,7 @@ class Death : Listener {
 
         // If player has only one item then keep it
         if (drops.size == 1) {
-            items[name] = ArrayList(Collections.nCopies(1, drops[0]))
+            items[name] = listOf(drops[0])
             event.drops.remove(drops[0])
             player.inventory.remove(drops[0])
             return
@@ -34,7 +34,7 @@ class Death : Listener {
         // If player has only two items then keep one of them
         else if (drops.size == 2) {
             val randomIndex = random.nextInt(2)
-            items[name] = ArrayList(Collections.nCopies(1, drops[randomIndex]))
+            items[name] = listOf(drops[randomIndex])
             event.drops.remove(drops[randomIndex])
             player.inventory.remove(drops[randomIndex])
             return

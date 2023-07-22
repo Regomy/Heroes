@@ -1,7 +1,6 @@
 package me.rejomy.heroes.util.inventory
 
 import me.rejomy.heroes.util.InventoryBuilder
-import me.rejomy.heroes.util.replaceColor
 import org.bukkit.Material
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
