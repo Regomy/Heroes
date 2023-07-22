@@ -1,6 +1,7 @@
 package me.rejomy.heroes.listener
 
 import me.rejomy.heroes.users
+import me.rejomy.heroes.util.random
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.PlayerDeathEvent
@@ -10,7 +11,6 @@ import java.util.*
 import kotlin.streams.toList
 
 val items = HashMap<String, List<ItemStack>>()
-private val random = Random()
 
 class Death : Listener {
 

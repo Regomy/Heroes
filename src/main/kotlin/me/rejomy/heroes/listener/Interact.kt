@@ -4,7 +4,6 @@ import me.rejomy.heroes.users
 import me.rejomy.heroes.util.checkLore
 import me.rejomy.heroes.util.containsItem
 import me.rejomy.heroes.util.removeOne
-import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Arrow
 import org.bukkit.event.EventHandler

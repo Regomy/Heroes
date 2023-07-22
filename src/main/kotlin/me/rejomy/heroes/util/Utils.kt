@@ -7,6 +7,8 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.InventoryHolder
 import org.bukkit.inventory.ItemStack
+import java.util.Random
+import kotlin.collections.ArrayList
 import kotlin.math.pow
 
 
@@ -16,6 +18,7 @@ lateinit var shopOrderInv: Inventory
 lateinit var shopDeathInv: Inventory
 lateinit var shopLifeInv: Inventory
 lateinit var shopPowerInv: Inventory
+val random = Random()
 
 fun hasEmptySlot(inventoryHolder: InventoryHolder): Boolean {
     for (i in 0..inventoryHolder.inventory.size)
