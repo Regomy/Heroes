@@ -2,11 +2,11 @@ package me.rejomy.heroes.listener.order
 
 import me.rejomy.heroes.INSTANCE
 import me.rejomy.heroes.users
+import me.rejomy.heroes.util.random
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
-import java.util.Random
 
 val orderFight = HashMap<Player, Long>()
 
@@ -21,7 +21,7 @@ fun checkOrderSpeedFight(player: Player) {
             }
         }, 110)
 
-        if(Random().nextInt(150) + 1 < 10 + users[name]!![1].toInt()) {
+        if(random.nextInt(150) + 1 < 10 + users[name]!![1].toInt()) {
             val level = users[name]!![1].toInt()
             player.addPotionEffect(PotionEffect(PotionEffectType.SPEED, 40 + level * 2, if(level < 11) 0 else 1))
         }

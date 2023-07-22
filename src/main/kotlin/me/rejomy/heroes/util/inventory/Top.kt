@@ -3,10 +3,8 @@ package me.rejomy.heroes.util.inventory
 import me.rejomy.heroes.users
 import me.rejomy.heroes.util.InventoryBuilder
 import me.rejomy.heroes.util.replaceColor
-import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.SkullType
-import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
@@ -22,7 +20,7 @@ class Top : InventoryBuilder("§0▷ Топ по прокачке", 54) {
         val level = ArrayList<Int>()
         val player = ArrayList<String>()
 
-        var cloneUsers = users.toMutableMap()
+        val cloneUsers = users.toMutableMap()
 
         for (i in 0..28) {
             var tname = "null**"

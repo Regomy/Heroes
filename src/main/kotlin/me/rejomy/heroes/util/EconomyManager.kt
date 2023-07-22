@@ -2,7 +2,7 @@ package me.rejomy.heroes.util
 
 import net.milkbowl.vault.economy.Economy
 import org.bukkit.Bukkit
-import org.bukkit.entity.Player
+import org.bukkit.OfflinePlayer
 
 object EconomyManager {
     fun init() {
@@ -13,18 +13,18 @@ object EconomyManager {
     }
 
     private var e: Economy? = null
-    fun takeMoney(p: Player?, prise: Double): Boolean {
+    fun takeMoney(p: OfflinePlayer?, prise: Double): Boolean {
         if (e == null) return false
         return if (e!!.getBalance(p) < prise) false else e!!.withdrawPlayer(p, prise)
             .transactionSuccess()
     }
 
-    fun giveMoney(p: Player?, money: Double) {
+    fun giveMoney(p: OfflinePlayer?, money: Double) {
         if (e == null) return
         e!!.depositPlayer(p, money)
     }
 
-    fun getBalance(p: Player?): Double {
+    fun getBalance(p: OfflinePlayer?): Double {
         return e!!.getBalance(p)
     }
 }

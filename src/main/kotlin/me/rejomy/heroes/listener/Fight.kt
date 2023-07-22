@@ -5,6 +5,7 @@ import me.rejomy.heroes.listener.order.checkOrderSpeedFight
 import me.rejomy.heroes.users
 import me.rejomy.heroes.util.checkLore
 import me.rejomy.heroes.util.getLevel
+import me.rejomy.heroes.util.random
 import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.enchantments.Enchantment
@@ -18,7 +19,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
-import java.util.*
 import kotlin.collections.HashMap
 import kotlin.math.floor
 
@@ -99,7 +99,7 @@ class Fight : Listener {
                         if (checkLore(
                                 armor.itemMeta.lore,
                                 "Шанс уровень% наложить слабость"
-                            ) && Random().nextInt(500) < level
+                            ) && random.nextInt(500) < level
                         )
                             killer.addPotionEffect(
                                 PotionEffect(
@@ -111,7 +111,7 @@ class Fight : Listener {
                         else if (checkLore(
                                 armor.itemMeta.lore,
                                 "Шанс уровень% наложить слепоту"
-                            ) && Random().nextInt(500) < level
+                            ) && random.nextInt(500) < level
                         )
                             killer.addPotionEffect(
                                 PotionEffect(
@@ -123,7 +123,7 @@ class Fight : Listener {
                         else if (checkLore(
                                 armor.itemMeta.lore,
                                 "Шанс уровень% наложить отравление"
-                            ) && Random().nextInt(500) < level
+                            ) && random.nextInt(500) < level
                         )
                             killer.addPotionEffect(
                                 PotionEffect(
@@ -135,7 +135,7 @@ class Fight : Listener {
                         else if (checkLore(
                                 armor.itemMeta.lore,
                                 "Шанс уровень% наложить медлительность"
-                            ) && Random().nextInt(500) < level
+                            ) && random.nextInt(500) < level
                         )
                             killer.addPotionEffect(
                                 PotionEffect(
@@ -147,10 +147,10 @@ class Fight : Listener {
                     }
                 }
                 event.damage = event.damage * 1.6
-                if (Random().nextInt(100) <= 80 + level)
+                if (random.nextInt(100) <= 80 + level)
                     return
             } else if (users[pname]!![0] == "жизнь") {
-                if (Random().nextInt(100) < getLevel(pname))
+                if (random.nextInt(100) < getLevel(pname))
                     player.addPotionEffect(
                         PotionEffect(
                             PotionEffectType.DAMAGE_RESISTANCE,
@@ -218,7 +218,7 @@ class Fight : Listener {
                     if (users.containsKey(event.entity.name) && users[player.name]!![0] == "сила") {
                         if (checkLore(armor.itemMeta.lore, "Меч соперника ломается быстрее")) {
 
-                            if (!dmg && Random().nextInt(100) <= getLevel(player.name)) {
+                            if (!dmg && random.nextInt(100) <= getLevel(player.name)) {
                                 dmg = true
                                 killer.damage(event.finalDamage)
                             }
@@ -262,11 +262,11 @@ class Fight : Listener {
                     if ((lastEks.containsKey(killer) && System.currentTimeMillis() - lastEks[killer]!! > 10000 || !lastEks.containsKey(
                             killer
                         ))
-                        && player.inventory.armorContents.isNotEmpty() && Random().nextInt(150).toDouble() <= ekskalibur
+                        && player.inventory.armorContents.isNotEmpty() && random.nextInt(150).toDouble() <= ekskalibur
                     ) {
 
                         val arm = player.inventory.armorContents
-                        val chance2 = Random().nextInt(arm.size)
+                        val chance2 = random.nextInt(arm.size)
                         if (arm[chance2] == null || arm[chance2].type == Material.AIR) return
 
                         val ekspa = killer.itemInHand
@@ -285,17 +285,17 @@ class Fight : Listener {
                             ekspa.durability = (ekspa.durability + itemDur).toShort()
                             player.playSound(player.location, Sound.ANVIL_BREAK, 2f, 2f)
                             killer.itemInHand = ekspa
-                            var itemStack = ItemStack(Material.AIR)
+                            val itemStack = ItemStack(Material.AIR)
                             arm[chance2] = itemStack
                         }
                         player.inventory.armorContents = arm
                         lastEks[killer] = System.currentTimeMillis()
                     }
             } else if (order_sword > 0) {
-                if (order_sword >= Random().nextInt(250))
+                if (order_sword >= random.nextInt(250))
                     player.addPotionEffect(PotionEffect(PotionEffectType.SLOW, (2 + getLevel(kname) / 5) * 20, 1 + getLevel(kname) / 4))
             } else if (balda_sword_strength > 0) {
-                if (Random().nextInt(100) < getLevel(killer.name)) {
+                if (random.nextInt(100) < getLevel(killer.name)) {
                     var multi = 2
                     if (killer.itemInHand.enchantments.containsKey(Enchantment.KNOCKBACK))
                         multi += killer.itemInHand.enchantments[Enchantment.KNOCKBACK]!!
@@ -304,7 +304,7 @@ class Fight : Listener {
                 }
             } else if (kun_sword_death > 0) {
                 if ((!eatPlayers.containsKey(player) || eatPlayers.containsKey(player) && System.currentTimeMillis() - eatPlayers[player]!! >= 1600)
-                    && Random().nextInt(400) < if (getLevel(kname) > 10) 10 else getLevel(kname)
+                    && random.nextInt(400) < if (getLevel(kname) > 10) 10 else getLevel(kname)
                 ) {
                     for (inv in player.inventory) {
                         if (inv == null) continue
@@ -340,7 +340,7 @@ class Fight : Listener {
                     }
                 }
             } else if (dubina_sword_power > 0) {
-                if (Random().nextInt(30) < getLevel(kname)) {
+                if (random.nextInt(30) < getLevel(kname)) {
                     event.damage *= 2
                     player.itemInHand.durability = (player.itemInHand.durability + 2).toShort()
                 }
