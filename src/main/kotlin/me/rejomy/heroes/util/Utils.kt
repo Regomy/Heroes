@@ -72,3 +72,14 @@ fun getPriceBook(player: Player): Int {
     val level = users[player.name]!![1].toInt()
     return if(level < 8) 2000 * 1.5.pow(level).toInt() else (2000 * 1.5.pow(7).toInt()) + (2000 * 1.26.pow(level).toInt())
 }
+
+fun getPriceBook(player: Player, level: Int): Int {
+    return if(level < 8) 2000 * 1.5.pow(level).toInt() else (2000 * 1.5.pow(7).toInt()) + (2000 * 1.26.pow(level).toInt())
+}
+
+fun getPriceSumBooks(player: Player): Double {
+    var sum = 0.0
+    for(level in 1..getLevel(player.name))
+        sum+= getPriceBook(player, level)
+    return sum
+}

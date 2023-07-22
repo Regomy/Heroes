@@ -28,6 +28,6 @@ fun checkOrderSpeedFight(player: Player) {
 
     } else {
         orderFight[player] = System.currentTimeMillis()
-        player.walkSpeed = .2F
+        player.walkSpeed = .195F
     }
 }

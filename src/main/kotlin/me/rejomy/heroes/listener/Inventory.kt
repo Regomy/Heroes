@@ -178,7 +178,7 @@ class Inventory : Listener {
         } else if (clearHero && item.hasItemMeta() && item.itemMeta.hasLore()) {
             if (checkLore(item.itemMeta.lore, "Сбросить текущий класс")) {
                 val level = getLevel(name).toDouble()
-                if (level > 0) EconomyManager.giveMoney(player, getPriceBook(player) / 2.0)
+                if (level > 0) EconomyManager.giveMoney(player, getPriceSumBooks(player) / 2.0)
                 if (users[name]!![0] == "порядок")
                     player.walkSpeed = 0.2F
                 else if (users[name]!![0] == "жизнь" || users[name]!![0] == "смерть")
