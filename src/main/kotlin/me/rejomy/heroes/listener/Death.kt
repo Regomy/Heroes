@@ -28,7 +28,6 @@ class Death : Listener {
         if (drops.size == 1) {
             items[name] = listOf(drops[0])
             event.drops.remove(drops[0])
-            player.inventory.remove(drops[0])
             return
         }
         // If player has only two items then keep one of them
@@ -36,7 +35,6 @@ class Death : Listener {
             val randomIndex = random.nextInt(2)
             items[name] = listOf(drops[randomIndex])
             event.drops.remove(drops[randomIndex])
-            player.inventory.remove(drops[randomIndex])
             return
         }
 
@@ -50,7 +48,6 @@ class Death : Listener {
             val randomIndex = random.nextInt(drops.size)
             newItems.add(drops[randomIndex])
 
-            player.inventory.remove(drops[randomIndex])
             event.drops.remove(drops[randomIndex])
             drops.removeAt(randomIndex)
         }
