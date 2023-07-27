@@ -117,7 +117,7 @@ class Inventory : Listener {
                     db.set(name, "жизнь", 1)
                     users[name] = arrayOf("жизнь", "0")
                     nekro[name] = Upgrade(player).openInventory()
-                    player.healthScale = 24.0
+                    player.healthScale = 22.0
                     player.openInventory(nekro[name])
                 }
 
