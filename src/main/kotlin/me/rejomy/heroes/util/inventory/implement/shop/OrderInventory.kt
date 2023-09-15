@@ -1,14 +1,17 @@
-package me.rejomy.heroes.util.inventory.shop
+package me.rejomy.heroes.util.inventory.implement.shop
 
-import me.rejomy.heroes.util.InventoryBuilder
-import me.rejomy.heroes.util.replaceColor
+import me.rejomy.heroes.util.inventory.InventoryBuilder
+import me.rejomy.heroes.util.toColor
+import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 
-class Order : InventoryBuilder("§0▷ Магазин магии", 54) {
+class OrderInventory : InventoryBuilder("§0▷ Магазин магии", 54) {
 
     fun openInventory(): Inventory {
+        Bukkit.broadcastMessage("Build inv")
+
         var map: HashMap<Int, ItemStack> = HashMap()
         map = customization(map)
 
@@ -49,18 +52,6 @@ class Order : InventoryBuilder("§0▷ Магазин магии", 54) {
                 "&c ‣ &7Цена предмета &c5.999\$   " ,
                 "&7") ), Material.DIAMOND_BOOTS, 1)
 
-
-        map[33] = createItemStack(" ", lore( arrayOf("&7" ,
-            "&c ‣ &7Яблоко &9Спасения &7даёт вам:   " ,
-            "&c ‣ &7Блокировку всех вражеских атак  " ,
-            "&c ‣ &7- в течение 5+ур/4 секунд  " ,
-            "&7" ,
-            "&c ‣ &7Действие предмета зависит от  " ,
-            "&c ‣ &7уровня вашего героя.  " ,
-            "",
-            "&c ‣ &7Цена предмета &c4.000\$   " ,
-            "&7") ), Material.GOLDEN_APPLE, 1)
-
         val lore = ArrayList<String>()
         lore.add("&7")
         lore.add("&c ‣ &7Лук &9Порядка &7даёт вам:   ")
@@ -74,7 +65,7 @@ class Order : InventoryBuilder("§0▷ Магазин магии", 54) {
         lore.add("&c ‣ &7Цена предмета &c12.700$   ")
         lore.add("&7")
 
-        map[24] = createItemStack("XBOW", replaceColor( lore ), Material.BOW, 1)
+        map[24] = createItemStack("XBOW", toColor( lore ), Material.BOW, 1)
 
         val SWORD = ArrayList<String>()
         SWORD.add("&7")
@@ -87,7 +78,7 @@ class Order : InventoryBuilder("§0▷ Магазин магии", 54) {
         SWORD.add("&c ‣ &7Цена предмета &c7.000$   ")
         SWORD.add("&7")
 
-        map[25] = createItemStack("XSWORD", replaceColor( SWORD ), Material.DIAMOND_SWORD, 1)
+        map[25] = createItemStack("XSWORD", toColor( SWORD ), Material.DIAMOND_SWORD, 1)
 
         val loreexit = ArrayList<String>()
         loreexit.add("")
@@ -98,7 +89,7 @@ class Order : InventoryBuilder("§0▷ Магазин магии", 54) {
         loreexit.add("§f предыдущую страницу!")
         loreexit.add("")
 
-        map[49]  = createItemStack("§7", replaceColor(loreexit), Material.BARRIER, 1)
+        map[49]  = createItemStack("§7", toColor(loreexit), Material.BARRIER, 1)
 
         return createInv(map)
     }

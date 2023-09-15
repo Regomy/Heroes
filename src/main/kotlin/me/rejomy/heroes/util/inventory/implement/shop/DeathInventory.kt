@@ -1,12 +1,12 @@
-package me.rejomy.heroes.util.inventory.shop
+package me.rejomy.heroes.util.inventory.implement.shop
 
-import me.rejomy.heroes.util.InventoryBuilder
-import me.rejomy.heroes.util.replaceColor
+import me.rejomy.heroes.util.inventory.InventoryBuilder
+import me.rejomy.heroes.util.toColor
 import org.bukkit.Material
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 
-class Death : InventoryBuilder("§0▷ Магазин магии", 54) {
+class DeathInventory : InventoryBuilder("§0▷ Магазин магии", 54) {
 
     fun openInventory(): Inventory {
         var map: HashMap<Int, ItemStack> = HashMap()
@@ -82,19 +82,6 @@ class Death : InventoryBuilder("§0▷ Магазин магии", 54) {
             ), Material.DIAMOND_BOOTS, 1
         )
 
-        val lore = ArrayList<String>()
-        lore.add("&7")
-        lore.add("&c ‣ &7Кунь &8Смерти &7даёт вам:   ")
-        lore.add("&c ‣ &7Возможность своровать 1 чарку   ")
-        lore.add("&c ‣ &7с шансом level% у соперника в бою.   ")
-        lore.add("&7")
-        lore.add("&c ‣ &7Сила меча зависит от")
-        lore.add("&c ‣ &7уровня вашего героя ")
-        lore.add("&7")
-        lore.add("&c ‣ &7Цена предмета &c16.000$   ")
-        lore.add("&7")
-        map[22] = createItemStack("KUN OF DEATH", replaceColor(lore), Material.DIAMOND_SWORD, 1)
-
         map[23] = createItemStack(
             " ", lore(
                 arrayOf(
@@ -121,7 +108,7 @@ class Death : InventoryBuilder("§0▷ Магазин магии", 54) {
         loreexit.add("§f предыдущую страницу!")
         loreexit.add("")
 
-        map[49] = createItemStack("§7", replaceColor(loreexit), Material.BARRIER, 1)
+        map[49] = createItemStack("§7", toColor(loreexit), Material.BARRIER, 1)
 
         return createInv(map)
     }

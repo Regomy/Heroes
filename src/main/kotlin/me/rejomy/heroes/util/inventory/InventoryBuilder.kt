@@ -1,5 +1,6 @@
-package me.rejomy.heroes.util
+package me.rejomy.heroes.util.inventory
 
+import me.rejomy.heroes.util.item.ItemEditor
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.inventory.Inventory

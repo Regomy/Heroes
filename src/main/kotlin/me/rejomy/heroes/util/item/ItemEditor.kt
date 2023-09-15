@@ -1,5 +1,6 @@
-package me.rejomy.heroes.util
+package me.rejomy.heroes.util.item
 
+import me.rejomy.heroes.util.toColor
 import org.bukkit.Material
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
@@ -9,39 +10,37 @@ open class ItemEditor {
     fun lore(array: Array<String>): List<String> {
         val list = ArrayList<String>()
         for(i in array)
-            list.add(replaceColor(i))
+            list.add(toColor(i))
         return list
     }
 
-    fun createItemStack(name: String, lore: List<String>?, material: Material, amount: Int): ItemStack {
+    fun createItemStack(name: String, lore: Array<String>, material: Material, amount: Int): ItemStack {
+
         val item = ItemStack(material, amount)
-        val meta = item.itemMeta
 
-        meta.displayName = replaceColor(name)
+        return createItemStack(name, lore.toList(), item, amount)
 
-        if (lore != null) {
-            lore.forEach {
-                replaceColor(it)
-            }
-            meta.lore = lore
-        }
-
-        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_DESTROYS, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_PLACED_ON, ItemFlag.HIDE_ENCHANTS)
-
-        item.itemMeta = meta
-        return item
     }
 
-    fun createItemStack(name: String, lore: List<String>?, itemStack: ItemStack, amount: Int): ItemStack {
-        val item = itemStack
+    fun createItemStack(name: String, lore: List<String>?, material: Material, amount: Int): ItemStack {
+
+        val item = ItemStack(material, amount)
+
+        return createItemStack(name, lore, item, amount)
+
+    }
+
+    fun createItemStack(name: String, lore: List<String>?, item: ItemStack, amount: Int): ItemStack {
+
         item.amount = amount
+
         val meta = item.itemMeta
 
-        meta.displayName = replaceColor(name)
+        meta.displayName = toColor(name)
 
         if (lore != null) {
             lore.forEach {
-                replaceColor(it)
+                toColor(it)
             }
             meta.lore = lore
         }
@@ -49,7 +48,9 @@ open class ItemEditor {
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_DESTROYS, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_PLACED_ON, ItemFlag.HIDE_ENCHANTS)
 
         item.itemMeta = meta
+
         return item
+
     }
 
     fun createItemStack(name: String, lore: List<String>?, material: Material, amount: Int, data: Short): ItemStack {

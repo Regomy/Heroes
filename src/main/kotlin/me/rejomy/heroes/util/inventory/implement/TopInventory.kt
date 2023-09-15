@@ -1,15 +1,15 @@
-package me.rejomy.heroes.util.inventory
+package me.rejomy.heroes.util.inventory.implement
 
 import me.rejomy.heroes.users
-import me.rejomy.heroes.util.InventoryBuilder
-import me.rejomy.heroes.util.replaceColor
+import me.rejomy.heroes.util.inventory.InventoryBuilder
+import me.rejomy.heroes.util.toColor
 import org.bukkit.Material
 import org.bukkit.SkullType
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
 
-class Top : InventoryBuilder("§0▷ Топ по прокачке", 54) {
+class TopInventory : InventoryBuilder("§0▷ Топ по прокачке", 54) {
 
     fun openInventory(): Inventory {
         val map: HashMap<Int, ItemStack> = HashMap()
@@ -25,9 +25,9 @@ class Top : InventoryBuilder("§0▷ Топ по прокачке", 54) {
         for (i in 0..28) {
             var tname = "null**"
             var tcount = 0
-            cloneUsers.forEach { (name, level) ->
-                if (tcount < level[1].toInt()) {
-                    tcount = level[1].toInt()
+            cloneUsers.forEach { (name, heroData) ->
+                if (tcount < heroData.level) {
+                    tcount = heroData.level
                     tname = name
                 }
             }
@@ -38,16 +38,16 @@ class Top : InventoryBuilder("§0▷ Топ по прокачке", 54) {
 
         var pos = 1
 
-        for (set in slots)
+        for (set in slots) {
             for (i in set) {
-                if(player[0] == "null**") break
+                if (player[0] == "null**") break
                 map[i] = createItemStack(
                     " ", lore(
                         arrayOf(
                             "&7",
                             "&c ‣ &7${player[0]} - &a#${pos}   ",
                             "&c ‣ &7Уровень прокачки - §e${level[0]} ",
-                            "&c ‣ &7Раса - §e${users[player[0]]!![0]} ",
+                            "&c ‣ &7Раса - §e${users[player[0]]!!.type.russianType} ",
                             "&7"
                         )
                     ), getPlayerSkull(player[0]), 1
@@ -56,23 +56,25 @@ class Top : InventoryBuilder("§0▷ Топ по прокачке", 54) {
                 level.removeAt(0)
                 pos++
             }
+        }
 
-        val loreexit = ArrayList<String>()
-        loreexit.add("")
-        loreexit.add("§5§lВернуться в меню")
-        loreexit.add("§a§m--")
-        loreexit.add("")
-        loreexit.add("§a Нажмите§7 - §fчтобы открыть     ")
-        loreexit.add("§f предыдущую страницу!")
-        loreexit.add("")
-
-        map[49] = createItemStack("§7", replaceColor(loreexit), Material.BARRIER, 1)
+        map[49] = createItemStack(
+            "§7", arrayOf(
+                "",
+                "§5§lВернуться в меню",
+                "§a§m--",
+                "",
+                "§a Нажмите§7 - §fчтобы открыть     ",
+                "§f предыдущую страницу!",
+                ""
+            ), Material.BARRIER, 1
+        )
 
         return createInv(map)
     }
 
     // Создаем функцию, которая возвращает ItemStack с головой игрока
-    fun getPlayerSkull(playerName: String): ItemStack {
+    private fun getPlayerSkull(playerName: String): ItemStack {
         val itemStack = ItemStack(Material.SKULL_ITEM, 1, SkullType.PLAYER.ordinal.toShort())
 
         // Получаем метаданные предмета (ItemMeta)

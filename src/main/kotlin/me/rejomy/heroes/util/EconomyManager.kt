@@ -5,26 +5,19 @@ import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 
 object EconomyManager {
-    fun init() {
-        val reg = Bukkit.getServicesManager().getRegistration(
-            Economy::class.java
-        )
-        if (reg != null) e = reg.provider
-    }
 
-    private var e: Economy? = null
+    private var economy = Bukkit.getServicesManager().getRegistration(Economy::class.java).provider
+
     fun takeMoney(p: OfflinePlayer?, prise: Double): Boolean {
-        if (e == null) return false
-        return if (e!!.getBalance(p) < prise) false else e!!.withdrawPlayer(p, prise)
+        return if (economy.getBalance(p) < prise) false else economy.withdrawPlayer(p, prise)
             .transactionSuccess()
     }
 
     fun giveMoney(p: OfflinePlayer?, money: Double) {
-        if (e == null) return
-        e!!.depositPlayer(p, money)
+        economy.depositPlayer(p, money)
     }
 
     fun getBalance(p: OfflinePlayer?): Double {
-        return e!!.getBalance(p)
+        return economy.getBalance(p)
     }
 }

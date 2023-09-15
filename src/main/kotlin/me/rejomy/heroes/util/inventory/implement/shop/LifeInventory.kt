@@ -1,12 +1,12 @@
-package me.rejomy.heroes.util.inventory.shop
+package me.rejomy.heroes.util.inventory.implement.shop
 
-import me.rejomy.heroes.util.InventoryBuilder
-import me.rejomy.heroes.util.replaceColor
+import me.rejomy.heroes.util.inventory.InventoryBuilder
+import me.rejomy.heroes.util.toColor
 import org.bukkit.Material
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 
-class Life : InventoryBuilder("§0▷ Магазин магии", 54) {
+class LifeInventory : InventoryBuilder("§0▷ Магазин магии", 54) {
 
     fun openInventory(): Inventory {
         var map: HashMap<Int, ItemStack> = HashMap()
@@ -56,7 +56,7 @@ class Life : InventoryBuilder("§0▷ Магазин магии", 54) {
         lore.add("&c ‣ &7Цена предмета &c8.200$   ")
         lore.add("&7")
 
-        map[22] = createItemStack("XXL_SWORD", replaceColor( lore ), Material.DIAMOND_SWORD, 1)
+        map[22] = createItemStack("XXL_SWORD", toColor( lore ), Material.DIAMOND_SWORD, 1)
 
         val loreexit = ArrayList<String>()
         loreexit.add("")
@@ -67,7 +67,7 @@ class Life : InventoryBuilder("§0▷ Магазин магии", 54) {
         loreexit.add("§f предыдущую страницу!")
         loreexit.add("")
 
-        map[49]  = createItemStack("§7", replaceColor(loreexit), Material.BARRIER, 1)
+        map[49]  = createItemStack("§7", toColor(loreexit), Material.BARRIER, 1)
 
         return createInv(map)
     }
